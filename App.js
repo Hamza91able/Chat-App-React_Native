@@ -1,11 +1,26 @@
 import React from 'react';
+import { Font, AppLoading } from 'expo';
 import {
   StyleSheet,
-  Text,
-  View,
-  ActivityIndicator,
+  Platform,
+  StatusBar,
 } from 'react-native';
+import {
+  Fab,
+  Root,
+  Icon,
+  Button,
+  View,
+  Text
+} from 'native-base'
 import { fetchChats } from './constants/api';
+import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
+
+
+import TopHeader from './screens/Header';
+import HomeScreen from './screens/HomeScreen';
+import StatusScreen from './screens/StatusScreen';
+import ContactScreen from './screens/ContactsScreen';
 
 export default class App extends React.Component {
 
@@ -14,14 +29,18 @@ export default class App extends React.Component {
   }
 
   state = {
-    loading: false,
+    loading: true,
     chats: [],
   }
 
-  async componentDidMount() {
-    this.setState({
-      loading: true
+  async componentWillMount() {
+    await Font.loadAsync({
+      Roboto: require("native-base/Fonts/Roboto.ttf"),
+      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
     });
+  }
+
+  async componentDidMount() {
 
     const data = await this.props.fetchChats();
 
@@ -32,33 +51,56 @@ export default class App extends React.Component {
     }, 2000);
   }
 
+  test = () => {
+    console.log("TEST");
+  }
+
+  renderFab = () => {
+    return (
+      <View style={{ flex: 1 }}>
+        <Fab
+          direction="up"
+          onPress={this.test}
+          style={{ backgroundColor: '#128c7e' }}
+          position="bottomRight">
+          <Icon name="text" />
+        </Fab>
+      </View>
+    )
+  }
+
   render() {
     if (this.state.loading) {
       return (
-        <View style={styles.container}>
-          <ActivityIndicator size="large" />
-        </View>
+        <Root>
+          <AppLoading />
+        </Root>
       )
     }
 
     return (
-      <View style={styles.container}>
-        <Text>Chat Application</Text>
-        {this.state.chats.map((chat, i) => {
-          return (
-            <Text key={i}>{chat.title}</Text>
-          )
-        })}
-      </View>
-    );
+      <React.Fragment>
+        <TopHeader />
+        <AppContainer />
+        {this.renderFab()}
+      </React.Fragment>
+    )
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const TabNavigator = createMaterialTopTabNavigator(
+  {
+    Home: HomeScreen,
+    Settings: StatusScreen,
+  }, {
+    defaultNavigationOptions: {
+      tabBarOptions: {
+        style: {
+          backgroundColor: '#128c7e',
+        }
+      }
+    }
+  }
+);
+
+const AppContainer = createAppContainer(TabNavigator);
