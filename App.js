@@ -20,7 +20,7 @@ import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigat
 import TopHeader from './screens/Header';
 import HomeScreen from './screens/HomeScreen';
 import StatusScreen from './screens/StatusScreen';
-import ContactScreen from './screens/ContactsScreen';
+// import ContactScreen from './screens/ContactsScreen';
 
 export default class App extends React.Component {
 
