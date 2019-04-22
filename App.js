@@ -11,16 +11,23 @@ import {
   Icon,
   Button,
   View,
-  Text
+  Text,
+  Body,
+  Title,
+  Subtitle,
 } from 'native-base'
 import { fetchChats } from './constants/api';
-import { createMaterialTopTabNavigator, createAppContainer } from 'react-navigation';
-
+import {
+  createMaterialTopTabNavigator,
+  createAppContainer,
+  createStackNavigator,
+  createSwitchNavigator,
+} from 'react-navigation';
 
 import TopHeader from './screens/Header';
 import HomeScreen from './screens/HomeScreen';
 import StatusScreen from './screens/StatusScreen';
-// import ContactScreen from './screens/ContactsScreen';
+import ContactScreen from './screens/ContactsScreen';
 
 export default class App extends React.Component {
 
@@ -52,21 +59,8 @@ export default class App extends React.Component {
   }
 
   test = () => {
-    console.log("TEST");
-  }
-
-  renderFab = () => {
-    return (
-      <View style={{ flex: 1 }}>
-        <Fab
-          direction="up"
-          onPress={this.test}
-          style={{ backgroundColor: '#128c7e' }}
-          position="bottomRight">
-          <Icon name="text" />
-        </Fab>
-      </View>
-    )
+    console.log(this.props)
+    // () => this.props.navigation.navigate('Contacts')
   }
 
   render() {
@@ -80,9 +74,9 @@ export default class App extends React.Component {
 
     return (
       <React.Fragment>
-        <TopHeader />
+        {/* <TopHeader /> */}
         <AppContainer />
-        {this.renderFab()}
+        {/* {this.renderFab()} */}
       </React.Fragment>
     )
   }
@@ -103,4 +97,80 @@ const TabNavigator = createMaterialTopTabNavigator(
   }
 );
 
-const AppContainer = createAppContainer(TabNavigator);
+const ContactStack = createStackNavigator({
+  Home: {
+    screen: TabNavigator,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerTitle: 'Chat App',
+        headerRight: <Button transparent><Icon style={{ color: 'white' }} name='more' /></Button>,
+        headerStyle: {
+          backgroundColor: '#128c7e',
+          elevation: null
+        },
+        headerTitleStyle: {
+          color: 'white'
+        }
+      }
+    }
+  },
+  Contacts: {
+    screen: ContactScreen,
+    navigationOptions: ({ navigation }) => {
+      return {
+        headerTitle: <Body style={{ marginLeft: -150 }}>
+          <Title>Select contacts</Title>
+          <Subtitle style={{ marginLeft: -50 }}>124 contacts</Subtitle>
+        </Body>,
+        headerRight: <React.Fragment>
+          <Button style={{ marginTop: 4 }} transparent>
+            <Icon style={{ color: 'white' }} name='search' />
+          </Button>
+          <Button style={{ marginTop: 4 }} transparent>
+            <Icon style={{ color: 'white' }} name='more' />
+          </Button>
+        </React.Fragment>,
+        headerStyle: {
+          backgroundColor: '#128c7e',
+          elevation: null
+        },
+        headerTitleStyle: {
+          color: 'white'
+        }
+      }
+    }
+  }
+})
+
+const DashboardStackNavigator = createStackNavigator({
+  DashboardTabNavigator: ContactStack
+}, {
+    defaultNavigationOptions: ({ navigation }) => {
+      return {
+        header: null,
+        headerTitle: 'Chat App',
+        headerRight: <Button transparent><Icon style={{ color: 'white' }} name='more' /></Button>,
+        headerStyle: {
+          backgroundColor: '#128c7e',
+          elevation: null
+        },
+        headerTitleStyle: {
+          color: 'white'
+        }
+      }
+    }
+  }, {
+    headerMode: 'screen',
+  }, {
+
+  }
+);
+
+const AppSwitchNavigator = createSwitchNavigator({
+  // Welcome: { screen: WelcomeScreen },
+  Dashboard: { screen: DashboardStackNavigator },
+});
+
+
+
+const AppContainer = createAppContainer(AppSwitchNavigator);
