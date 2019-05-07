@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Platform,
   StatusBar,
+  InteractionManager,
 } from 'react-native';
 import {
   Fab,
@@ -32,9 +33,9 @@ import Chat from './screens/Chat';
 
 export default class App extends React.Component {
 
-  // static defaultProps = {
-  //   fetchChats
-  // }
+  static defaultProps = {
+    fetchChats
+  }
 
   state = {
     loading: false,
@@ -48,25 +49,29 @@ export default class App extends React.Component {
     });
   }
 
-  // async componentDidMount() {
+  async componentDidMount() {
+    const data = await this.props.fetchChats();
 
-  //   const data = await this.props.fetchChats();
+    InteractionManager.runAfterInteractions(() => {
+      // 2: Component is done animating
+      // 3: Start fetching the team
 
-  //   setTimeout(() => {
-  //     this.setState({
-  //       loading: false, chats: data.chats
-  //     });
-  //   }, 2000);
-  // }
+      setTimeout(() => {
+        this.setState({
+          loading: false, chats: data.chats
+        });
+      }, 2000);
+    });
+  }
 
   render() {
-    // if (this.state.loading) {
-    //   return (
-    //     <Root>
-    //       <AppLoading />
-    //     </Root>
-    //   )
-    // }
+    if (this.state.loading) {
+      return (
+        <Root>
+          <AppLoading />
+        </Root>
+      )
+    }
 
     return (
       <React.Fragment>

@@ -3,6 +3,7 @@ import {
     StyleSheet,
     Platform,
     StatusBar,
+    InteractionManager,
 } from 'react-native';
 import {
     Subtitle,
@@ -16,6 +17,14 @@ import {
 } from 'native-base'
 
 export default class ContactScreen extends React.Component {
+
+    componentDidMount() {
+        // 1: Component is mounted off-screen
+        InteractionManager.runAfterInteractions(() => {
+            // 2: Component is done animating
+            // 3: Start fetching the team
+        });
+    }
 
     render() {
         return (
