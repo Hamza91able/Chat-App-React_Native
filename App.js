@@ -28,15 +28,16 @@ import TopHeader from './screens/Header';
 import HomeScreen from './screens/HomeScreen';
 import StatusScreen from './screens/StatusScreen';
 import ContactScreen from './screens/ContactsScreen';
+import Chat from './screens/Chat';
 
 export default class App extends React.Component {
 
-  static defaultProps = {
-    fetchChats
-  }
+  // static defaultProps = {
+  //   fetchChats
+  // }
 
   state = {
-    loading: true,
+    loading: false,
     chats: [],
   }
 
@@ -47,36 +48,29 @@ export default class App extends React.Component {
     });
   }
 
-  async componentDidMount() {
+  // async componentDidMount() {
 
-    const data = await this.props.fetchChats();
+  //   const data = await this.props.fetchChats();
 
-    setTimeout(() => {
-      this.setState({
-        loading: false, chats: data.chats
-      });
-    }, 2000);
-  }
-
-  test = () => {
-    console.log(this.props)
-    // () => this.props.navigation.navigate('Contacts')
-  }
+  //   setTimeout(() => {
+  //     this.setState({
+  //       loading: false, chats: data.chats
+  //     });
+  //   }, 2000);
+  // }
 
   render() {
-    if (this.state.loading) {
-      return (
-        <Root>
-          <AppLoading />
-        </Root>
-      )
-    }
+    // if (this.state.loading) {
+    //   return (
+    //     <Root>
+    //       <AppLoading />
+    //     </Root>
+    //   )
+    // }
 
     return (
       <React.Fragment>
-        {/* <TopHeader /> */}
         <AppContainer />
-        {/* {this.renderFab()} */}
       </React.Fragment>
     )
   }
@@ -85,7 +79,7 @@ export default class App extends React.Component {
 const TabNavigator = createMaterialTopTabNavigator(
   {
     Home: HomeScreen,
-    Settings: StatusScreen,
+    Status: StatusScreen,
   }, {
     defaultNavigationOptions: {
       tabBarOptions: {
@@ -139,6 +133,9 @@ const ContactStack = createStackNavigator({
         }
       }
     }
+  },
+  Chat: {
+    screen: Chat,
   }
 })
 
@@ -167,7 +164,6 @@ const DashboardStackNavigator = createStackNavigator({
 );
 
 const AppSwitchNavigator = createSwitchNavigator({
-  // Welcome: { screen: WelcomeScreen },
   Dashboard: { screen: DashboardStackNavigator },
 });
 
