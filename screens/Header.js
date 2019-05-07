@@ -12,7 +12,7 @@ export default class HeaderExample extends Component {
         return (
             <Header style={styles.header}>
                 <Body>
-                    <Title style={{ marginLeft: 10 }}>Chat Application</Title>
+                    <Title style={{ marginLeft: 10 }}>{this.props.title ? this.props.title : "Chat Application"} </Title>
                 </Body>
                 <Right>
                     <Button transparent>

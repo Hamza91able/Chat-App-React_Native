@@ -34,6 +34,8 @@ import HomeScreen from './screens/HomeScreen';
 import StatusScreen from './screens/StatusScreen';
 import ContactScreen from './screens/ContactsScreen';
 import Chat from './screens/Chat';
+import Login from './screens/Login';
+import firebase from './constants/Firebase';
 
 export default class App extends React.Component {
 
@@ -42,7 +44,7 @@ export default class App extends React.Component {
   }
 
   state = {
-    loading: false,
+    loading: true,
     chats: [],
     Avatar: "https://static.scientificamerican.com/blogs/cache/file/D4C437D8-244E-4582-BF1A158A7330AD33_source.jpg?w=590&h=800&B039F14E-190A-42BE-BA73A8D60DD542A5",
     Name: 'Hamza',
@@ -81,7 +83,8 @@ export default class App extends React.Component {
 
     return (
       <React.Fragment>
-        <AppContainer />
+        {/* <AppContainer /> */}
+        <Login />
       </React.Fragment>
     )
   }
