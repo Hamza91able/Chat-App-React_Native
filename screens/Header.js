@@ -4,10 +4,12 @@ import {
     StyleSheet,
     Platform,
     StatusBar,
+    Picker,
 } from 'react-native';
 import { Header, Body, Right, Button, Icon, Title } from 'native-base';
 
 export default class HeaderExample extends Component {
+
     render() {
         return (
             <Header style={styles.header}>

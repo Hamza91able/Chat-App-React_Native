@@ -29,6 +29,10 @@ const captchaUrl = `https://chatapplicationreactnative.firebaseapp.com/index.htm
 
 export default class Login extends React.Component {
 
+    static defaultProps = {
+        createUser
+    }
+
     constructor(props) {
         super(props)
         this.state = {
@@ -85,9 +89,10 @@ export default class Login extends React.Component {
     }
 
     onSignIn = async () => {
-        const { confirmationResult, code } = this.state
+        const { confirmationResult, code, phone } = this.state
         try {
             await confirmationResult.confirm(code)
+            await this.props.createUser(firebase.auth().currentUser.uid, phone);
         } catch (e) {
             alert(e);
         }

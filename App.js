@@ -29,7 +29,6 @@ import {
   createSwitchNavigator,
 } from 'react-navigation';
 
-import TopHeader from './screens/Header';
 import HomeScreen from './screens/HomeScreen';
 import StatusScreen from './screens/StatusScreen';
 import ContactScreen from './screens/ContactsScreen';
@@ -73,6 +72,7 @@ export default class App extends React.Component {
           this.setState({
             showMainApp: true,
             showSpinner: false,
+            showLogin: false,
           })
         } else {
           this.setState({
@@ -87,6 +87,14 @@ export default class App extends React.Component {
           loading: false, chats: data.chats
         });
       }, 2000);
+    });
+  }
+
+  logout = () => {
+    firebase.auth().signOut().then(() => {
+      // Sign-out successful.
+    }, error => {
+      // An error happened.
     });
   }
 
@@ -106,6 +114,7 @@ export default class App extends React.Component {
         {showSpinner && < Spinner />}
         {showLogin && <Login />}
         {showMainApp && <AppContainer />}
+        {/* <Button onPress={this.logout}><Text>LOGOUT</Text></Button> */}
       </React.Fragment>
     )
   }
@@ -125,7 +134,6 @@ const TabNavigator = createMaterialTopTabNavigator(
     }
   }
 );
-
 
 const ContactStack = createStackNavigator({
   Home: {
