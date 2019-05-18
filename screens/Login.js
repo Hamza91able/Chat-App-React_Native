@@ -21,6 +21,7 @@ import {
 } from 'native-base';
 
 import firebase from '../constants/Firebase';
+import { createUser } from '../constants/api';
 import HeaderTop from './Header';
 
 // const captchaUrl = `https://workers-ef768.firebaseapp.com/captcha.html?appurl=${Linking.makeUrl('')}`
