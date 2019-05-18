@@ -35,6 +35,7 @@ import StatusScreen from './screens/StatusScreen';
 import ContactScreen from './screens/ContactsScreen';
 import Chat from './screens/Chat';
 import Login from './screens/Login';
+import Spinner from './screens/Spinner';
 import firebase from './constants/Firebase';
 
 export default class App extends React.Component {
@@ -48,6 +49,9 @@ export default class App extends React.Component {
     chats: [],
     Avatar: "https://static.scientificamerican.com/blogs/cache/file/D4C437D8-244E-4582-BF1A158A7330AD33_source.jpg?w=590&h=800&B039F14E-190A-42BE-BA73A8D60DD542A5",
     Name: 'Hamza',
+    showLogin: false,
+    showMainApp: false,
+    showSpinner: true,
   }
 
   async componentWillMount() {
@@ -64,6 +68,20 @@ export default class App extends React.Component {
       // 2: Component is done animating
       // 3: Start fetching the team
 
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          this.setState({
+            showMainApp: true,
+            showSpinner: false,
+          })
+        } else {
+          this.setState({
+            showLogin: true,
+            showSpinner: false,
+          })
+        }
+      })
+
       setTimeout(() => {
         this.setState({
           loading: false, chats: data.chats
@@ -73,6 +91,8 @@ export default class App extends React.Component {
   }
 
   render() {
+    const { showLogin, showMainApp, showSpinner } = this.state;
+
     if (this.state.loading) {
       return (
         <Root>
@@ -83,8 +103,9 @@ export default class App extends React.Component {
 
     return (
       <React.Fragment>
-        {/* <AppContainer /> */}
-        <Login />
+        {showSpinner && < Spinner />}
+        {showLogin && <Login />}
+        {showMainApp && <AppContainer />}
       </React.Fragment>
     )
   }

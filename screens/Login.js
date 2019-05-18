@@ -3,7 +3,22 @@ import {
     View, ScrollView, TextInput
 } from 'react-native';
 import { Linking, WebBrowser } from 'expo'
-import { Header, Body, Right, Button, Icon, Title, Container, Content, Card, CardItem, Text, Input } from 'native-base';
+import {
+    Header,
+    Body,
+    Right,
+    Button,
+    Icon,
+    Title,
+    Container,
+    Content,
+    Card,
+    CardItem,
+    Text,
+    Input,
+    List,
+    ListItem,
+} from 'native-base';
 
 import firebase from '../constants/Firebase';
 import HeaderTop from './Header';
@@ -22,7 +37,9 @@ export default class Login extends React.Component {
             code: '',
             countryCode: null,
             phoneNumber: null,
-            headerTitle: "Verify your phone number"
+            headerTitle: "Verify your phone number",
+            showStep1: true,
+            showStep2: false,
         }
         firebase.auth().onAuthStateChanged(user => {
             this.setState({ user })
@@ -41,6 +58,7 @@ export default class Login extends React.Component {
             if (tokenEncoded)
                 token = decodeURIComponent(tokenEncoded)
         }
+
         Linking.addEventListener('url', listener)
         await WebBrowser.openBrowserAsync(captchaUrl)
         Linking.removeEventListener('url', listener)
@@ -53,7 +71,7 @@ export default class Login extends React.Component {
             }
             try {
                 const confirmationResult = await firebase.auth().signInWithPhoneNumber(phone, captchaVerifier)
-                this.setState({ confirmationResult })
+                this.setState({ confirmationResult, showStep1: false, showStep2: true, })
             } catch (e) {
                 console.warn(e)
             }
@@ -70,9 +88,9 @@ export default class Login extends React.Component {
         try {
             await confirmationResult.confirm(code)
         } catch (e) {
-            console.warn(e)
+            alert(e);
         }
-        this.reset()
+        // this.reset()
     }
 
     reset = () => {
@@ -90,7 +108,8 @@ export default class Login extends React.Component {
         this.setState({
             phone: `+${countryCode}${phoneNumber}`,
         }, () => {
-            alert(`Phone No: ${this.state.phone}`);
+            // alert(`Phone No: ${this.state.phone}`);
+            this.onPhoneComplete()
         })
     }
 
@@ -177,14 +196,16 @@ export default class Login extends React.Component {
                             <CardItem>
                                 <Body>
                                     <Text>
-                                        Please enter your area code and phone number.
+                                        Please enter the 6 digits code sent to {this.state.phone}
                                     </Text>
                                     <View style={{ flexDirection: "row", marginTop: 30, justifyContent: 'center', alignItems: 'center' }}>
                                         <View style={{ marginLeft: 100 }}>
                                             <Input
                                                 keyboardType="numeric"
                                                 maxLength={6}
-                                                placeholder="------"
+                                                placeholder="------------"
+                                                value={this.state.code}
+                                                onChangeText={this.onCodeChange}
                                                 style={
                                                     {
                                                         fontSize: 20,
@@ -199,10 +220,11 @@ export default class Login extends React.Component {
                                             />
                                             <Input
                                                 value="Enter 6-digit code"
+                                                style={{ fontSize: 15 }}
                                             />
                                         </View>
                                         <View>
-                                            <Button light style={{ height: 40, marginLeft: 8 }}><Text>OK</Text></Button>
+                                            <Button onPress={this.onSignIn} light style={{ height: 40, marginLeft: 8 }}><Text>OK</Text></Button>
                                         </View>
                                     </View>
                                 </Body>
@@ -250,12 +272,16 @@ export default class Login extends React.Component {
         //             />
         //         </ScrollView>
         //     )
+
+        const { showStep1, showStep2 } = this.state;
+        console.log(this.state.user);
+
         return (
             <React.Fragment>
                 <HeaderTop title={this.state.headerTitle} />
-                {/* {this.renderInfo()}
-                {this.renderPhoneNoSection()} */}
-                {this.renderVerificationProcess()}
+                {showStep1 && this.renderInfo()}
+                {showStep1 && this.renderPhoneNoSection()}
+                {showStep2 && this.renderVerificationProcess()}
             </React.Fragment>
         )
     }
